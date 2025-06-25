@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legal-AI-ly Blonde</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom font for a more 'Legally Blonde' feel */
+        /* Police personnalisée pour une ambiance plus 'Legally Blonde' */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            /* Faint patterned background with pink base */
+            /* Fond avec motif léger et base rose */
+            background: radial-gradient(circle at 1px 1px, rgba(255,192,203,0.08)_1px,transparent_0) 0 0 / 8px 8px,
+                        radial-gradient(circle at 1px 1px, rgba(255,192,203,0.08)_1px,transparent_0) 4px 4px / 8px 8px,
+                        #ffe0ee; /* Light pink background */
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+    <div class="w-full max-w-3xl p-8 rounded-xl shadow-lg bg-white border-4 border-pink-400">
+        <!-- Title and Subheading -->
+        <!-- Titre et sous-titre -->
+        <h1 class="text-5xl font-extrabold text-center mb-16 text-purple-800">
+            Legal-AI-ly Blonde
+        </h1>
+        <p class="text-xl text-center mb-12 italic font-medium text-pink-900">
+            "I feel comfortable using legal jargon in everyday life."
+        </p>
+
+        <!-- Select Region -->
+        <!-- Sélection de la région -->
+        <div class="mb-8">
+            <h2 class="text-2xl font-semibold mb-3 text-purple-800">Select Region</h2>
+            <div class="relative">
+                <select
+                    id="regionSelect"
+                    class="block w-full px-4 py-3 rounded-lg border-2 border-pink-300 bg-white text-black focus:ring-pink-500 focus:border-pink-500 appearance-none shadow-md hover:border-pink-500 transition-colors duration-200"
+                >
+                    <option value="" disabled selected>Select a Country</option>
+                    <option value="Australia">Australia</option>
+                    <option value="France">France</option>
+                    <option value="Germany">Germany</option>
+                    <option value="Italy">Italy</option>
+                    <option value="Netherlands">Netherlands</option>
+                    <option value="New Zealand">New Zealand</option>
+                    <option value="Spain">Spain</option>
+                    <option value="United Kingdom">United Kingdom</option>
+                    <option value="United States">United States</option>
+                </select>
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-pink-700">
+                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                        <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 6.757 7.586 5.343 9z" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- Insurance Content Input -->
+        <!-- Saisie du contenu d'assurance -->
+        <div class="mb-8">
+            <h2 class="text-2xl font-semibold mb-3 text-purple-800">Insurance Content</h2>
+            <textarea
+                id="insuranceContent"
+                rows="10"
+                placeholder="Paste your insurance content here..."
+                class="w-full p-4 rounded-lg border-2 border-pink-300 bg-white text-black focus:ring-pink-500 focus:border-pink-500 resize-y shadow-md hover:border-pink-500 transition-colors duration-200"
+            ></textarea>
+        </div>
+
+        <!-- Check Compliance Button -->
+        <!-- Bouton de vérification de conformité -->
+        <div class="text-center mb-8">
+            <button
+                id="checkComplianceBtn"
+                class="flex items-center justify-center mx-auto px-8 py-4 rounded-full text-white font-bold text-lg shadow-md transition-all duration-300 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 transform hover:scale-105 hover:shadow-xl hover:-translate-y-1"
+            >
+                <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                Check Compliance
+            </button>
+        </div>
+
+        <!-- Alert Message Container -->
+        <!-- Conteneur de messages d'alerte -->
+        <div id="alertMessage" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-md relative mb-4 transition-opacity duration-300">
+            <strong class="font-bold">Heads up!</strong>
+            <span class="block sm:inline">Please select a region and paste some insurance content to proceed.</span>
+        </div>
+
+        <!-- Results Display -->
+        <!-- Affichage des résultats -->
+        <div
+            id="resultsSection"
+            class="results-section p-6 rounded-xl border-2 border-pink-300 bg-white shadow-inner opacity-0 transition-opacity duration-700"
+            style="display: none;"
+        >
+            <h2 class="text-3xl font-bold mb-4 text-center text-purple-800">Compliance Results</h2>
+            <div id="resultsContainer" class="space-y-3 mb-6">
+                <!-- Results will be dynamically inserted here -->
+                <!-- Les résultats seront insérés dynamiquement ici -->
+            </div>
+
+            <!-- Overall Compliance -->
+            <!-- Conformité générale -->
+            <div id="overallComplianceSection" class="text-center border-t-2 border-pink-300 pt-4 mt-4">
+                <h3 id="overallComplianceText" class="text-2xl font-bold text-purple-800 mb-2"></h3>
+                <p id="passFailStatus" class="text-xl font-bold"></p>
+                <!-- Legally Blonde Pass Quote -->
+                <!-- Citation Legally Blonde pour le succès -->
+                <p id="legallyBlondePassQuote" class="text-lg mt-2 text-pink-900 italic font-medium" style="display: none;">
+                    "What? Like, it's hard?"
+                </p>
+                <!-- Legally Blonde Fail Quote -->
+                <!-- Citation Legally Blonde pour l'échec -->
+                <p id="legallyBlondeFailQuote" class="text-lg mt-2 text-pink-900 italic font-medium" style="display: none;">
+                    "Wow. Don't you look like a walking felony."
+                </p>
+            </div>
+
+            <!-- Generate Legal Brief Button -->
+            <!-- Bouton Générer un mémoire juridique -->
+            <div class="text-center mt-8">
+                <button
+                    id="generateBriefBtn"
+                    class="flex items-center justify-center mx-auto px-8 py-4 rounded-full text-white font-bold text-lg shadow-md transition-all duration-300 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 transform hover:scale-105 hover:shadow-xl hover:-translate-y-1"
+                    style="display: none;"
+                >
+                    <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2H7a2 2 0 00-2 2v2m7-8V5a2 2 0 012-2h2a2 2 0 012 2v4M7 3a2 2 0 012-2h2a2 2 0 S012 2v4"></path>
+                    </svg>
+                    Generate Legal Brief
+                </button>
+            </div>
+        </div>
+
+        <!-- Legal Brief Output Section -->
+        <!-- Section de sortie du mémoire juridique -->
+        <div
+            id="legalBriefSection"
+            class="mt-8 p-6 rounded-xl border-2 border-pink-300 bg-white shadow-lg"
+            style="display: none;"
+        >
+            <h2 class="text-3xl font-bold mb-4 text-center text-purple-800">Legal Brief</h2>
+            <textarea
+                id="legalBriefOutput"
+                rows="30"
+                class="w-full p-4 rounded-lg border-2 border-pink-300 bg-white text-black resize-y font-mono text-sm"
+                readonly
+            ></textarea>
+        </div>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Références aux éléments DOM
+            const regionSelect = document.getElementById('regionSelect');
+            const insuranceContentTextArea = document.getElementById('insuranceContent');
+            const checkComplianceBtn = document.getElementById('checkComplianceBtn');
+            const resultsSection = document.getElementById('resultsSection');
+            const resultsContainer = document.getElementById('resultsContainer');
+            const overallComplianceSection = document.getElementById('overallComplianceSection');
+            const overallComplianceText = document.getElementById('overallComplianceText');
+            const passFailStatus = document.getElementById('passFailStatus');
+            const legallyBlondePassQuote = document.getElementById('legallyBlondePassQuote');
+            const legallyBlondeFailQuote = document.getElementById('legallyBlondeFailQuote');
+            const generateBriefBtn = document.getElementById('generateBriefBtn');
+            const legalBriefSection = document.getElementById('legalBriefSection');
+            const legalBriefOutput = document.getElementById('legalBriefOutput');
+            const alertMessage = document.getElementById('alertMessage');
+
+
+            // Définition des mots-clés généraux pour toutes les régions
+            const keywords = [
+                'cancellation',
+                'definitions',
+                'complaints/disputes',
+                'important information',
+                'contact us',
+                'data protection',
+                'general exclusions',
+                'conditions',
+            ];
+
+            // Définition de la législation détaillée et des lignes directrices pour chaque région
+            const regionLegislation = {
+                'Australia': [
+                    { term: 'Private Health Insurance Act 2007', message: '(Australia) Consider referencing the Private Health Insurance Act 2007 (if relevant to health insurance).', required: true },
+                    { term: 'Australian Consumer Law', message: 'Ensure compliance with the Australian Consumer Law, specifically regarding consumer guarantees, unfair contract terms, and misleading or deceptive conduct. Non-compliance can lead to significant penalties and consumer redress.', required: true },
+                    { term: 'ASIC Act 2001', message: 'Ensure compliance with the ASIC Act 2001 regarding financial services, market integrity, and consumer protection. ASIC regulates conduct in the financial services industry.', required: true },
+                    { term: 'APRA', message: 'Mentions APRA (Australian Prudential Regulation Authority), which oversees prudential regulation for financial institutions to ensure financial stability and solvency.', required: true },
+                    { term: 'ASIC', message: 'Mentions ASIC (Australian Securities and Investments Commission), which enforces consumer protection and market integrity laws across financial services, including licensing and disclosure requirements.', required: true },
+                    { term: 'Product Disclosure Statement', message: 'Mentions Product Disclosure Statement (PDS), a mandatory disclosure document providing key information about financial products to consumers, including features, benefits, risks, and costs.', required: true },
+                    { term: 'Target Market Determination', message: 'Mentions Target Market Determination (TMD), a mandatory document specifying the target market for financial products and ensuring products meet consumer needs, in line with design and distribution obligations.', required: true },
+                    { term: 'AFCA', message: 'Suggest mentioning AFCA (Australian Financial Complaints Authority) as the external dispute resolution body for consumers and small businesses, providing an accessible and independent complaints mechanism.', required: true },
+                    { term: 'Financial Claims Scheme', message: 'Mentions the Financial Claims Scheme (FCS) for consumer protection in case of insurer failure, providing timely access to funds for eligible policyholders.', required: true },
+                    { term: 'ESG factors', message: 'Consider including explicit statements on ESG (Environmental, Social, and Governance) factors and sustainability considerations to align with modern best practices and investor expectations. This includes climate risk disclosures and ethical investment practices.', required: false },
+                    { term: 'AI governance', message: 'Consider AI governance, fairness, and transparency in data use to align with emerging ethical guidelines and responsible innovation principles, particularly regarding algorithmic bias, explainability, and human oversight in decision-making.', required: false },
+                    { term: 'operational resilience', message: 'Demonstrate operational resilience and robust cybersecurity measures to meet APRA\'s CPS 234 standards and broader industry expectations, ensuring continuity of critical functions during disruptions and protection against cyber threats.', required: false },
+                    { term: 'vulnerable customers', message: 'Address approaches for identifying and supporting vulnerable customers, ensuring equitable access and fair treatment.', required: false },
+                    { term: 'Insurance Act 1973', message: 'This Act covers the prudential supervision of general insurers and life insurers, setting out their licensing, capital, and governance requirements.', required: false },
+                    { term: 'treating customers honestly and fairly', message: 'Indicates adherence to treating customers honestly and fairly (ASIC expectation), a fundamental principle for market conduct and consumer trust, requiring good faith and transparent dealings.', required: false },
+                ],
+                'France': [
+                    { term: 'Code des Assurances', message: 'Consider referencing the Code des Assurances (French Insurance Code), which is the primary legal framework for insurance activities in France, covering contracts, companies, and distribution.', required: true },
+                    { term: 'third-party liability', message: 'Ensure mandatory third-party liability is clear (especially for vehicles), as this is a fundamental legal requirement for many insurance types in France, covering damage to others.', required: true },
+                    { term: 'Attestation d\'assurance', message: 'Suggest referencing "Attestation d\'assurance" or "Certificat d\'assurance," key documents proving insurance coverage that must be carried or displayed.', required: false },
+                    { term: 'EU Accident Form', message: 'Suggest including information about the EU Accident Form (Constat Amiable), crucial for standardized accident reporting in cross-border European incidents.', required: false },
+                    { term: 'GDPR', message: 'Mentions GDPR (General Data Protection Regulation), ensuring robust data privacy and protection for EU citizens across all personal data processing. Non-compliance can result in significant fines and reputational damage.', required: true },
+                    { term: 'Solvency II Directive', message: 'Ensure compliance with Solvency II Directive, particularly regarding capital requirements (Pillar 1 for solvency capital), governance (Pillar 2 for risk management and ORSA), and public disclosure (Pillar 3 for transparency), to ensure financial stability and policyholder protection across the EU.', required: true },
+                    { term: 'Pillar 3 disclosure', message: 'Refer to Solvency II Pillar 3 disclosure requirements, ensuring transparency of solvency and financial condition to supervisors and the public through regular reports like the Solvency and Financial Condition Report (SFCR).', required: true },
+                    { term: 'Insurance Distribution Directive', message: 'Address requirements of the Insurance Distribution Directive (IDD), focusing on fair selling practices, transparency of remuneration, and consumer protection in insurance distribution across the EU.', required: true },
+                    { term: 'IPID', message: 'Include an Insurance Product Information Document (IPID) if applicable, providing standardized, easily understandable pre-contractual information for non-life products, facilitating consumer comparison.', required: true },
+                    { term: 'Product Oversight and Governance', message: 'Demonstrate adherence to Product Oversight and Governance (POG) rules, ensuring products are designed to meet the needs of identified target markets and prevent consumer detriment throughout their lifecycle.', required: true },
+                    { term: 'EIOPA complaints handling', message: 'Outline adherence to EIOPA complaints handling guidelines, ensuring effective, prompt, and consistent resolution of consumer complaints across the EU, promoting consumer trust.', required: true },
+                    { term: 'EIOPA Regulation', message: 'Consider referencing EIOPA Regulation (EU) No 1094/2010, the founding regulation of EIOPA, promoting consistent supervisory practices and convergence across the EU financial sector.', required: true },
+                    { term: 'ACPR', message: 'Mentions ACPR (Autorité de contrôle prudentiel et de résolution), France\'s prudential and conduct supervisory authority for banks and insurers, overseeing compliance and financial stability.', required: true },
+                    { term: 'ESG factors', message: 'Address ESG (Environmental, Social, and Governance) factors and sustainability reporting in line with EU regulations (e.g., SFDR, Taxonomy Regulation), demonstrating commitment to sustainable finance and responsible corporate behavior.', required: false },
+                    { term: 'AI governance', message: 'Consider AI ethics and governance frameworks as per EU guidelines and the proposed AI Act, addressing fairness, transparency, and human oversight in AI-driven processes to mitigate bias and ensure accountability.', required: false },
+                    { term: 'DORA', message: 'Ensure compliance with the Digital Operational Resilience Act (DORA) for robust IT security and operational resilience in financial services, strengthening defenses against cyber threats and disruptions.', required: false },
+                    { term: 'NIS2', message: 'Address Network and Information Systems Directive 2 (NIS2) requirements.', required: false },
+                    { term: 'vulnerable customers', message: 'Address support for vulnerable customers and financial inclusion.', required: false },
+                ],
+                'Germany': [
+                    { term: 'Versicherungsaufsichtsgesetz', message: 'Consider referencing Versicherungsaufsichtsgesetz (VAG - Insurance Supervision Act), the primary law for insurance supervision and prudential requirements for German insurers.', required: true },
+                    { term: 'Versicherungsvertragsgesetz', message: 'Consider referencing Versicherungsvertragsgesetz (VVG - German Insurance Contract Act), which governs the rights and obligations arising from insurance contracts and includes specific consumer protection provisions.', required: true },
+                    { term: 'BaFin', message: 'Mentions BaFin (Federal Financial Supervisory Authority), Germany\'s integrated financial supervisor for banks, insurers, and financial service providers, ensuring market integrity and consumer protection.', required: true },
+                    { term: 'GDPR', message: 'Mentions GDPR (General Data Protection Regulation), ensuring robust data privacy and protection for EU citizens across all personal data processing. Non-compliance can result in significant fines and reputational damage.', required: true },
+                    { term: 'minimum capital requirements', message: 'Suggest clarity on minimum capital requirements or financial stability, crucial under Solvency II and national regulations to ensure insurer solvency and capacity to meet obligations.', required: true },
+                    { term: 'Solvency II Directive', message: 'Ensure compliance with Solvency II Directive, particularly regarding capital requirements (Pillar 1 for solvency capital), governance (Pillar 2 for risk management and ORSA), and public disclosure (Pillar 3 for transparency), to ensure financial stability and policyholder protection across the EU.', required: true },
+                    { term: 'Pillar 3 disclosure', message: 'Refer to Solvency II Pillar 3 disclosure requirements, ensuring transparency of solvency and financial condition to supervisors and the public through regular reports like the Solvency and Financial Condition Report (SFCR).', required: true },
+                    { term: 'Insurance Distribution Directive', message: 'Address requirements of the Insurance Distribution Directive (IDD), focusing on fair selling practices, transparency of remuneration, and consumer protection in insurance distribution across the EU.', required: true },
+                    { term: 'IPID', message: 'Include an Insurance Product Information Document (IPID) if applicable, providing standardized, easily understandable pre-contractual information for non-life products, facilitating consumer comparison.', required: true },
+                    { term: 'Product Oversight and Governance', message: 'Demonstrate adherence to Product Oversight and Governance (POG) rules, ensuring products are designed to meet the needs of identified target markets and prevent consumer detriment throughout their lifecycle.', required: true },
+                    { term: 'EIOPA complaints handling', message: 'Outline adherence to EIOPA complaints handling guidelines, ensuring effective, prompt, and consistent resolution of consumer complaints across the EU, promoting consumer trust.', required: true },
+                    { term: 'EIOPA Regulation', message: 'Consider referencing EIOPA Regulation (EU) No 1094/2010, the founding regulation of EIOPA, promoting consistent supervisory practices and convergence across the EU financial sector.', required: true },
+                    { term: 'German Civil Code', message: 'Consider referencing the German Civil Code (BGB), which contains general contract law principles applicable to insurance contracts, defining basic rights and obligations in commercial dealings.', required: true },
+                    { term: 'ESG factors', message: 'Address ESG (Environmental, Social, and Governance) factors and sustainability reporting in line with EU regulations (e.g., SFDR, Taxonomy Regulation), demonstrating commitment to sustainable finance and responsible corporate behavior.', required: false },
+                    { term: 'AI governance', message: 'Consider AI ethics and governance frameworks as per EU guidelines and the proposed AI Act, addressing fairness, transparency, and human oversight in AI-driven processes to mitigate bias and ensure accountability.', required: false },
+                    { term: 'DORA', message: 'Ensure compliance with the Digital Operational Resilience Act (DORA) for IT security and operational resilience in financial services, strengthening defenses against cyber threats and disruptions.', required: false },
+                    { term: 'NIS2', message: 'Address Network and Information Systems Directive 2 (NIS2) requirements.', required: false },
+                    { term: 'vulnerable customers', message: 'Address support for vulnerable customers and financial inclusion., in line with consumer protection principles and regulatory expectations for fair access and tailored assistance.', required: false },
+                ],
+                'Italy': [
+                    { term: 'Codice delle Assicurazioni Private', message: 'Consider referencing the Codice delle Assicurazioni Private (Private Insurance Code), the main consolidated law governing insurance and reinsurance activities in Italy.', required: true },
+                    { term: 'IVASS', message: 'Mentions IVASS (Italian Insurance Supervising Authority), responsible for the supervision of insurance and reinsurance undertakings in Italy, ensuring market stability and policyholder protection.', required: true },
+                    { term: 'complaints office', message: 'Ensure clarity on internal complaints handling process (45-day reply is a key regulatory timeline for insurers to respond to complaints), and outline escalation paths to IVASS.', required: true },
+                    { term: 'Inail', message: 'Mentions Inail (National Institute for Insurance against Accidents at Work) if relevant, as mandatory insurance for occupational injuries and diseases, impacting employee coverage.', required: true },
+                    { term: 'GDPR', message: 'Mentions GDPR (General Data Protection Regulation), ensuring robust data privacy and protection for EU citizens across all personal data processing. Non-compliance can result in significant fines and reputational damage.', required: true },
+                    { term: 'Solvency II Directive', message: 'Ensure compliance with Solvency II Directive, particularly regarding capital requirements (Pillar 1 for solvency capital), governance (Pillar 2 for risk management and ORSA), and public disclosure (Pillar 3 for transparency), to ensure financial stability and policyholder protection across the EU.', required: true },
+                    { term: 'Pillar 3 disclosure', message: 'Refer to Solvency II Pillar 3 disclosure requirements, ensuring transparency of solvency and financial condition to supervisors and the public through regular reports like the Solvency and Financial Condition Report (SFCR).', required: true },
+                    { term: 'Insurance Distribution Directive', message: 'Address requirements of the Insurance Distribution Directive (IDD), focusing on fair selling practices, transparency of remuneration, and consumer protection in insurance distribution across the EU.', required: true },
+                    { term: 'IPID', message: 'Include an Insurance Product Information Document (IPID) if applicable, providing standardized, easily understandable pre-contractual information for non-life products, facilitating consumer comparison.', required: true },
+                    { term: 'Product Oversight and Governance', message: 'Demonstrate adherence to Product Oversight and Governance (POG) rules, ensuring products are designed to meet the needs of identified target markets and prevent consumer detriment throughout their lifecycle.', required: true },
+                    { term: 'EIOPA complaints handling', message: 'Outline adherence to EIOPA complaints handling guidelines, ensuring effective, prompt, and consistent resolution of consumer complaints across the EU, promoting consumer trust.', required: true },
+                    { term: 'EIOPA Regulation', message: 'Consider referencing EIOPA Regulation (EU) No 1094/2010, the founding regulation of EIOPA, promoting consistent supervisory practices and convergence across the EU financial sector.', required: true },
+                    { term: 'ESG factors', message: 'Address ESG (Environmental, Social, and Governance) factors and sustainability reporting in line with EU regulations (e.g., SFDR, Taxonomy Regulation), demonstrating commitment to sustainable finance and responsible corporate behavior.', required: false },
+                    { term: 'AI governance', message: 'Consider AI ethics and governance frameworks as per EU guidelines and the proposed AI Act, addressing fairness, transparency, and human oversight in AI-driven processes to mitigate bias and ensure accountability.', required: false },
+                    { term: 'DORA', message: 'Ensure compliance with the Digital Operational Resilience Act (DORA) for IT security and operational resilience in financial services.', required: false },
+                    { term: 'NIS2', message: 'Address Network and Information Systems Directive 2 (NIS2) requirements.', required: false },
+                    { term: 'vulnerable customers', message: 'Address support for vulnerable customers and financial inclusion., in line with consumer protection principles.', required: false },
+                ],
+                'Netherlands': [
+                    { term: 'Wet op het financieel toezicht', message: 'Consider referencing the Wet op het financieel toezicht (Wft - Financial Supervision Act), the overarching law for financial supervision in the Netherlands, covering market conduct and prudential rules.', required: true },
+                    { term: 'AFM', message: 'Mentions AFM (Authority for the Financial Markets), responsible for conduct supervision of financial markets and consumer protection, ensuring fair and transparent dealings.', required: true },
+                    { term: 'DNB', message: 'Mentions DNB (De Nederlandsche Bank - Central Central Bank).' , required: true },
+                    { term: 'EU regulations', message: 'Ensure compliance with relevant EU regulations, as Dutch law often transposes EU directives directly into national law, requiring adherence to broader European standards.', required: true },
+                    { term: 'GDPR', message: 'Mentions GDPR (General Data Protection Regulation), ensuring robust data privacy and protection for EU citizens across all personal data processing. Non-compliance can result in significant fines and reputational damage.', required: true },
+                    { term: 'Solvency II Directive', message: 'Ensure compliance with Solvency II Directive, particularly regarding capital requirements (Pillar 1 for solvency capital), governance (Pillar 2 for risk management and ORSA), and public disclosure (Pillar 3 for transparency), to ensure financial stability and policyholder protection across the EU.', required: true },
+                    { term: 'Pillar 3 disclosure', message: 'Refer to Solvency II Pillar 3 disclosure requirements, ensuring transparency of solvency and financial condition to supervisors and the public through regular reports like the Solvency and Financial Condition Report (SFCR).', required: true },
+                    { term: 'Insurance Distribution Directive', message: 'Address requirements of the Insurance Distribution Directive (IDD), focusing on fair selling practices, transparency of remuneration, and consumer protection in insurance distribution across the EU.', required: true },
+                    { term: 'IPID', message: 'Include an Insurance Product Information Document (IPID) if applicable, providing standardized, easily understandable pre-contractual information for non-life products, facilitating consumer comparison.', required: true },
+                    { term: 'Product Oversight and Governance', message: 'Demonstrate adherence to Product Oversight and Governance (POG) rules, ensuring products are designed to meet the needs of identified target markets and prevent consumer detriment throughout their lifecycle.', required: true },
+                    { term: 'EIOPA complaints handling', message: 'Outline adherence to EIOPA complaints handling guidelines, ensuring effective, prompt, and consistent resolution of consumer complaints across the EU, promoting consumer trust.', required: true },
+                    { term: 'EIOPA Regulation', message: 'Consider referencing EIOPA Regulation (EU) No 1094/2010, the founding regulation of EIOPA, promoting consistent supervisory practices and convergence across the EU financial sector.', required: true },
+                    { term: 'Medical Examinations Act', message: 'Consider referencing the Medical Examinations Act (Wet op de medische keuringen - WMK), especially for health-related insurance, governing the use of medical examinations and protecting privacy rights related to health data.', required: true },
+                    { term: 'Dutch Code of Civil Procedure', message: 'Refer to the Dutch Code of Civil Procedure (Wetboek van Burgerlijke Rechtsvordering - Rv) for legal proceedings, evidence, and dispute resolution processes in the Netherlands.', required: true },
+                    { term: 'Dutch Civil Code', message: 'Ensure compliance with the Dutch Civil Code (Burgerlijk Wetboek - BW), particularly Book 7, Title 17 on insurance contracts, covering general principles of contract law and specific insurance provisions.', required: true },
+                    { term: 'Health Insurance Act', message: 'Consider referencing the Health Insurance Act (Zorgverzekeringswet - Zvw) for mandatory health insurance, ensuring universal access to healthcare and specific coverage requirements.', required: true },
+                    { term: 'social security laws', message: 'Mention compliance with relevant social security laws (e.g., related to disability insurance and mandatory health insurance), impacting mandatory and supplementary coverages and benefits.', required: false },
+                    { term: 'ESG factors', message: 'Address ESG (Environmental, Social, and Governance) factors and sustainability reporting in line with EU regulations.', required: false },
+                    { term: 'AI governance', message: 'Consider AI ethics and governance frameworks as per EU guidelines, ensuring fairness and transparency in automated decision-making and algorithmic accountability.', required: false },
+                    { term: 'DORA', message: 'Ensure compliance with the Digital Operational Resilience Act (DORA) for IT security and operational resilience in financial services.', required: false },
+                    { term: 'NIS2', message: 'Address Network and Information Systems Directive 2 (NIS2) requirements.', required: false },
+                    { term: 'vulnerable customers', message: 'Address support for vulnerable customers and financial inclusion., in line with consumer protection principles.', required: false },
+                ],
+                'New Zealand': [
+                    { term: 'Insurance (Prudential Supervision) Act 2010', message: 'Consider referencing the Insurance (Prudential Supervision) Act 2010, the primary law for prudential regulation of insurers, ensuring financial soundness and stability in the market.', required: true },
+                    { term: 'Financial Markets Authority', message: 'Mentions Financial Markets Authority (FMA) or conduct regulation, as the conduct regulator for financial markets and consumer protection, ensuring fair dealing.', required: true },
+                    { term: 'Reserve Bank of New Zealand', message: 'Mentions Reserve Bank of New Zealand (RBNZ) or prudential regulation, as the prudential supervisor for insurers, overseeing their financial health and risk management.', required: true },
+                    { term: 'Fair Insurance Code', message: 'Suggest adherence to the Fair Insurance Code, an industry code of practice setting standards for customer service and claims handling, promoting good outcomes.', required: true },
+                    { term: 'good faith', message: 'Emphasize the principle of good faith, fundamental to insurance contracts under common law, requiring honesty and fair dealing from both insurer and policyholder.', required: true },
+                    { term: 'Privacy Act', message: 'Mentions New Zealand Privacy Act, governing the collection, use, storage, and disclosure of personal information, protecting individual privacy rights.', required: true },
+                    { term: 'ESG factors', message: 'Address ESG (Environmental, Social, and Governance) factors and climate risk disclosures, aligning with increasing regulatory and stakeholder expectations for sustainable practices and responsible investment.', required: false },
+                    { term: 'AI governance', message: 'Consider AI governance, fairness, and transparency in data use, aligning with global trends in responsible AI development and ethical automation.', required: false },
+                    { term: 'operational resilience', message: 'Demonstrate operational resilience and robust cybersecurity measures, important for maintaining financial system stability and protecting against cyber threats and service disruptions.', required: false },
+                    { term: 'vulnerable customers', message: 'Address support for vulnerable customers and financial inclusion, in line with FMA\'s conduct expectations for equitable access to financial services and tailored assistance.', required: false },
+                ],
+                'Spain': [
+                    { term: 'Ley de Contrato de Seguro', message: 'Consider referencing the Ley de Contrato de Seguro (Insurance Contract Law), which governs insurance contracts and the rights/obligations of parties, including duties of disclosure.', required: true },
+                    { term: 'DGSFP', message: 'Mentions DGSFP (General Directorate of Insurance and Pension Funds), the main supervisory body for the insurance and pension fund sector, ensuring market stability and policyholder protection.', required: true },
+                    { term: 'policyholder\'s duty to declare', message: 'Emphasize policyholder\'s duty to declare risk circumstances honestly before contract conclusion, a key aspect of Spanish insurance law impacting policy validity.', required: true },
+                    { term: 'risk aggravation', message: 'Suggest clear guidance on communicating risk aggravation during the policy term, as it affects policy validity and insurer\'s obligations to pay claims.', required: true },
+                    { term: 'GDPR', message: 'Mentions GDPR (General Data Protection Regulation), ensuring robust data privacy and protection for EU citizens across all personal data processing. Non-compliance can result in significant fines.', required: true },
+                    { term: 'Solvency II Directive', message: 'Ensure compliance with Solvency II Directive, particularly regarding capital requirements (Pillar 1), governance (Pillar 2), and public disclosure (Pillar 3).', required: true },
+                    { term: 'Pillar 3 disclosure', message: 'Refer to Solvency II Pillar 3 disclosure requirements, ensuring transparency of solvency and financial condition to supervisors and the public through regular reports like the Solvency and Financial Condition Report (SFCR).', required: true },
+                    { term: 'Insurance Distribution Directive', message: 'Address requirements of the Insurance Distribution Directive (IDD), focusing on fair selling practices, transparency of remuneration, and consumer protection in insurance distribution across the EU.', required: true },
+                    { term: 'IPID', message: 'Include an Insurance Product Information Document (IPID) if applicable, providing standardized pre-contractual information for non-life products.', required: true },
+                    { term: 'Product Oversight and Governance', message: 'Demonstrate adherence to Product Oversight and Governance (POG) rules, ensuring products are designed to meet the needs of identified target markets and prevent consumer detriment throughout their lifecycle.', required: true },
+                    { term: 'EIOPA complaints handling', message: 'Outline adherence to EIOPA complaints handling guidelines, ensuring effective, prompt, and consistent resolution of consumer complaints across the EU, promoting consumer trust.', required: true },
+                    { term: 'EIOPA Regulation', message: 'Consider referencing EIOPA Regulation (EU) No 1094/2010, the founding regulation of EIOPA, promoting consistent supervisory practices and convergence across the EU financial sector.', required: true },
+                    { term: 'Act 20/2015', message: 'Consider referencing Act 20/2015 on the organization, supervision and solvency of insurance and reinsurance companies, which transposes Solvency II into Spanish law and updates the regulatory framework.', required: true },
+                    { term: 'Royal Decree 1060/2015', message: 'Consider referencing Royal Decree 1060/2015, which develops Act 20/2015 and covers detailed rules on organization, supervision, solvency, and the compulsory insurance register.', required: true },
+                    { term: 'Royal Decree-Law 3/2020', message: 'Consider referencing Royal Decree-Law 3/2020, which transposes the IDD into Spanish law and regulates insurance distribution activities, including registration and conduct rules.', required: true },
+                    { term: 'Ministerio de Asuntos Económicos y Transformación Digital', message: 'Mentions Ministerio de Asuntos Económicos y Transformación Digital, the ministry responsible for economic policy and digital transformation, including insurance regulation and policy.', required: true },
+                    { term: 'Spanish Civil Code', message: 'Ensure consistency with the Spanish Civil Code, which contains general contract principles applicable to insurance contracts, defining basic rights and obligations in commercial dealings.', required: true },
+                    { term: 'ESG factors', message: 'Address ESG (Environmental, Social, and Governance) factors and sustainability reporting in line with EU regulations.', required: false },
+                    { term: 'AI governance', message: 'Consider AI ethics and governance frameworks as per EU guidelines, addressing fairness and transparency.', required: false },
+                    { term: 'DORA', message: 'Ensure compliance with the Digital Operational Resilience Act (DORA) for IT security and operational resilience in financial services.', required: false },
+                    { term: 'NIS2', message: 'Address Network and Information Systems Directive 2 (NIS2) requirements.', required: false },
+                    { term: 'vulnerable customers', message: 'Address support for vulnerable customers and financial inclusion., in line with consumer protection principles.', required: false },
+                ],
+                'United Kingdom': [
+                    { term: 'FCA Handbook', message: 'Mentions FCA Handbook (including ICOBS and PROD rules), providing detailed conduct and prudential rules for financial firms, outlining obligations for consumer protection and market integrity.', required: true },
+                    { term: 'Insurance Act 2015', message: 'Consider referencing the Insurance Act 2015, which reformed the law on insurance contracts, especially duties of disclosure for non-consumer contracts and remedies for breach.', required: true },
+                    { term: 'Consumer Duty', message: 'Ensure adherence to the FCA Consumer Duty, requiring firms to deliver good outcomes for retail customers, encompassing product design, price, communication, and support.', required: true },
+                    { term: 'UK GDPR', message: 'Mentions UK GDPR (General Data Protection Regulation), governing data protection and privacy post-Brexit, setting standards for personal data processing.', required: true },
+                    { term: 'PRA', message: 'Mentions PRA (Prudential Regulation Authority), responsible for prudential regulation and supervision of insurers, focusing on safety and soundness.', required: true },
+                    { term: 'Financial Conduct Authority', message: 'Mentions Financial Conduct Authority, covering conduct and consumer protection across financial services, ensuring markets work well.', required: true },
+                    { term: 'SM&CR', message: 'Addresses the Senior Managers and Certification Regime (SM&CR), enhancing accountability for individuals in financial firms for their conduct and responsibilities.', required: true },
+                    { term: 'FSMA', message: 'References the Financial Services and Markets Act 2000 (FSMA), the foundational legislation for financial services regulation in the UK, establishing regulatory bodies and their powers.', required: true },
+                    { term: 'Financial Ombudsman Service', message: 'Provides information on the Financial Ombudsman Service (FOS) for dispute resolution, offering a free and independent service for consumers and small businesses.', required: true },
+                    { term: 'PRA Rulebook', message: 'Refers to rules and guidance set out in the PRA Rulebook, detailing prudential requirements for insurers.', required: true },
+                    { term: 'Marine Insurance Act 1906', message: 'Consider referencing The Marine Insurance Act 1906 (if applicable to marine insurance), a key piece of legislation for marine insurance contracts, codifying principles of marine insurance.', required: true },
+                    { term: 'ESG factors', message: 'Address ESG (Environmental, Social, and Governance) factors and climate-related financial disclosures (e.g., TCFD recommendations), aligning with evolving regulatory expectations and sustainable finance initiatives.', required: false },
+                    { term: 'AI governance', message: 'Consider AI governance, fairness, and transparency in data use, in line with regulatory expectations for ethical AI in financial services.', required: false },
+                    { term: 'operational resilience', message: 'Demonstrate operational resilience in line with PRA/FCA expectations, ensuring firms can prevent, respond to, and recover from disruptions to critical business services.', required: false },
+                    { term: 'vulnerable customers', message: 'Address support for vulnerable customers and financial inclusion in line with FCA guidance, ensuring fair treatment and accessibility for all consumers.', required: false },
+                ],
+                'United States': [
+                    { term: 'state-specific insurance laws', message: 'Acknowledge the variability of state-specific insurance laws, as insurance is primarily state-regulated in the US, leading to diverse requirements across jurisdictions.', required: true },
+                    { term: 'NAIC model laws', message: 'Suggest alignment with NAIC (National Association of Insurance Commissioners) model laws, which provide templates for state legislation, promoting uniformity but are not legally binding without state adoption.', required: true },
+                    { term: 'Gramm-Leach-Bliley Act', message: 'Mentions Gramm-Leach-Bliley Act (GLBA) for financial data privacy and security, requiring financial institutions to protect consumer data and provide privacy notices.', required: true },
+                    { term: 'HIPAA', message: 'Mentions HIPAA (Health Insurance Portability and Accountability Act) if health-related content, governing the privacy and security of protected health information (PHI).', required: true },
+                    { term: 'CCPA', message: 'Mentions CCPA (California Consumer Privacy Act) or CPRA if content targets California residents, regulating consumer data privacy rights including access, deletion, and opt-out of sales.', required: true },
+                    { term: 'data sharing restrictions', message: 'Suggest clear information on data sharing restrictions, adhering to various state and federal privacy laws to protect consumer data.', required: false },
+                    { term: 'Bank Secrecy Act', message: 'Ensure compliance with the Bank Secrecy Act (BSA) and AML/KYC (Anti-Money Laundering/Know Your Customer) requirements, to prevent illicit financial activities and ensure customer identity verification.', required: false },
+                    { term: 'USA PATRIOT Act', message: 'Ensure compliance with the USA PATRIOT Act for anti-money laundering (AML), particularly provisions impacting financial institutions to combat terrorism financing.', required: false },
+                    { term: 'Unfair Trade Practices Act', message: 'Adhere to principles of the Unfair Trade Practices Act (e.g., no misrepresentation, no unfair discrimination), as adopted by most states to protect consumers from deceptive business practices.', required: false },
+                    { term: 'State Department of Insurance', message: 'Refer to relevant State Department of Insurance or Insurance Commissioner authority, as they are the primary regulators and consumer protectors at the state level, licensing and overseeing insurers.', required: false },
+                    { term: 'McCarran-Ferguson Act', message: 'Acknowledge the McCarran-Ferguson Act regarding state-based insurance regulation, which largely exempts insurance from federal antitrust laws, granting states primary regulatory authority.', required: false },
+                    { term: 'Section 5 of the Federal Trade Commission Act', message: 'Consider implications of Section 5 of the Federal Trade Commission Act on unfair/deceptive practices, as it can apply to insurance activities not fully regulated by states, prohibiting misleading advertisements.', required: false },
+                    { term: 'ESG strategy', message: 'Consider ESG strategy and climate risk disclosure in line with SEC/NAIC discussions, reflecting growing interest in sustainable finance and corporate responsibility.', required: false },
+                    { term: 'AI governance', message: 'Consider AI governance frameworks, addressing discrimination and bias (e.g., NAIC AI Principles), ensuring ethical and fair use of AI in underwriting, pricing, and claims.', required: false },
+                    { term: 'cybersecurity framework', message: 'Implement a robust cybersecurity framework (e.g., NIST, NYDFS, NAIC model law) to protect sensitive data and systems from cyber threats and ensure data integrity.', required: false },
+                    { term: 'vulnerable customers', message: 'Address support for vulnerable customers and fair access, aligning with consumer protection principles to ensure equitable insurance services.', required: false },
+                ],
+            };
+
+            // Fonction pour générer le mémoire juridique
+            // Function to generate the legal brief
+            function generateLegalBrief() {
+                const today = new Date();
+                const formattedDate = today.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+                const briefTitle = `Preliminary Compliance Review: ${regionSelect.value} Insurance Content Draft`;
+
+                let analysisFail = [];
+                let analysisSuggestion = [];
+
+                // Réexécuter la logique de conformité pour obtenir des résultats frais pour la génération du mémoire
+                // Re-run the compliance logic to get fresh results for brief generation
+                const tempResults = [];
+                let tempPassedChecks = 0;
+                let tempTotalStrictChecks = 0;
+                const tempContentLower = insuranceContentTextArea.value.toLowerCase();
+
+                // Vérifications des mots-clés généraux (à l'exclusion de 'how claims work', 'making a claim', 'policy issuer', 'plan issuer')
+                // General Keyword Checks (excluding 'how claims work', 'making a claim', 'policy issuer', 'plan issuer')
+                keywords.forEach(keyword => {
+                    tempTotalStrictChecks++;
+                    if (tempContentLower.includes(keyword.toLowerCase())) {
+                        tempResults.push({ type: 'keyword', term: keyword, status: 'pass', message: `Contains "${keyword}" keyword.` });
+                        tempPassedChecks++;
+                    } else {
+                        tempResults.push({ type: 'keyword', term: keyword, status: 'fail', message: `Missing "${keyword}" keyword.` });
+                    }
+                });
+
+                const hasHowClaimsWork = tempContentLower.includes('how claims work');
+                const hasMakingAClaim = tempContentLower.includes('making a claim');
+                tempTotalStrictChecks++;
+                if (hasHowClaimsWork || hasMakingAClaim) {
+                    tempResults.push({ type: 'keyword', term: 'claims process', status: 'pass', message: `Contains keywords related to claims process ("how claims work" or "making a claim").` });
+                    tempPassedChecks++;
+                } else {
+                    tempResults.push({ type: 'keyword', term: 'claims process', status: 'fail', message: `Missing keywords for claims process ("how claims work" or "making a claim").` });
+                }
+
+                const hasPolicyIssuer = tempContentLower.includes('policy issuer');
+                const hasPlanIssuer = tempContentLower.includes('plan issuer');
+                tempTotalStrictChecks++;
+                if (hasPolicyIssuer || hasPlanIssuer) {
+                    tempResults.push({ type: 'keyword', term: 'issuer identification', status: 'pass', message: `Contains keywords for issuer identification ("policy issuer" or "plan issuer").` });
+                    tempPassedChecks++;
+                } else {
+                    tempResults.push({ type: 'keyword', term: 'issuer identification', status: 'fail', message: `Missing keywords for issuer identification ("policy issuer" or "plan issuer").` });
+                }
+
+                const financialConductAuthorityPresentInContent = tempContentLower.includes('financial conduct authority');
+                if (regionSelect.value === 'United Kingdom') {
+                    tempTotalStrictChecks++;
+                    if (financialConductAuthorityPresentInContent) {
+                        tempResults.push({ type: 'region-specific', term: 'Financial Conduct Authority', status: 'pass', message: `(UK) Mentions Financial Conduct Authority.` });
+                        tempPassedChecks++;
+                    } else {
+                        tempResults.push({ type: 'region-specific', term: 'Financial Conduct Authority', status: 'fail', message: `(UK) Suggest mentioning Financial Conduct Authority for compliance.` });
+                    }
+                } else if (financialConductAuthorityPresentInContent) {
+                    tempResults.push({ type: 'error', term: 'Financial Conduct Authority', status: 'fail', message: `(Error) Financial Conduct Authority mention found. This is specific to the United Kingdom and should not be present for ${regionSelect.value}.` });
+                }
+
+                tempTotalStrictChecks++;
+                const hasCover = tempContentLower.includes('cover');
+                const hasProtection = tempContentLower.includes('protection');
+                if (regionSelect.value === 'United States') {
+                    if (hasCover) {
+                        tempResults.push({ type: 'suggestion', term: 'cover/protection', status: 'pass', message: `(US) Uses "cover", which is common in the United States.` });
+                        tempPassedChecks++;
+                    } else if (hasProtection) {
+                        tempResults.push({ type: 'suggestion', term: 'cover/protection', status: 'fail', message: `(US) Suggest using "protection" instead of "cover" for content in the United States.` });
+                    } else {
+                        tempResults.push({ type: 'suggestion', term: 'cover/protection', status: 'fail', message: `(US) Neither "cover" nor "protection" found. Consider using "cover".` });
+                    }
+                } else {
+                    if (hasProtection) {
+                        tempResults.push({ type: 'suggestion', term: 'cover/protection', status: 'pass', message: `(Global) Uses "protection", which is encouraged.` });
+                        tempPassedChecks++;
+                    } else if (hasCover) {
+                        tempResults.push({ type: 'suggestion', term: 'cover/protection', status: 'fail', message: `(Global) Suggest using "protection" instead of "cover" for content in ${regionSelect.value}.` });
+                    } else {
+                        tempResults.push({ type: 'suggestion', term: 'cover/protection', status: 'fail', message: `(Global) Neither "cover" nor "protection" found. Consider using "protection".` });
+                    }
+                }
+
+                const currentRegionLegislation = regionLegislation[regionSelect.value] || [];
+                currentRegionLegislation.forEach(item => {
+                    const isPresent = tempContentLower.includes(item.term.toLowerCase());
+                    if (item.required === false) {
+                        if (isPresent) {
+                            tempResults.push({ type: 'suggestion', term: item.term, status: 'pass', message: `(Guideline) Appears to address: "${item.term}".` });
+                        } else {
+                            tempResults.push({ type: 'suggestion', term: item.term, status: 'fail', message: `(Guideline) ${item.message.trim()}` });
+                        }
+                    } else {
+                        tempTotalStrictChecks++;
+                        if (isPresent) {
+                            tempResults.push({ type: 'legislation', term: item.term, status: 'pass', message: `(Legislation) Appears to address: "${item.term}".` });
+                            tempPassedChecks++;
+                        } else {
+                            tempResults.push({ type: 'legislation', term: item.term, status: 'fail', message: `(Legislation) Suggest including or addressing: "${item.message.replace(`(${regionSelect.value})`, '').trim()}".` });
+                        }
+                    }
+                });
+
+                tempResults.forEach(result => {
+                    if (result.status === 'pass' && result.type !== 'suggestion') {
+                        // This category is no longer explicitly listed in the brief's analysis section
+                        // Cette catégorie n'est plus explicitement listée dans la section d'analyse du mémoire
+                    } else if (result.status === 'fail' && result.type !== 'suggestion' && result.type !== 'error') {
+                        analysisFail.push(`* **Failure:** ${result.message}`);
+                    } else if (result.status === 'fail' && result.type === 'suggestion') {
+                         analysisSuggestion.push(`* **Suggestion:** ${result.message}`);
+                    } else if (result.type === 'error') {
+                        analysisFail.push(`* **Error:** ${result.message}`);
+                    }
+                });
+
+                const currentOverallCompliancePercentage = tempTotalStrictChecks > 0 ? (tempPassedChecks / tempTotalStrictChecks) * 100 : 0;
+                const overallStatus = currentOverallCompliancePercentage >= 75 ? 'PASS' : 'FAIL';
+
+                // Génération du contenu du mémoire
+                // Brief content generation
+                let briefContent = `**MEMORANDUM**
+
+**TO:** Senior Legal Counsel
+**FROM:** Cover Genius
+**DATE:** ${formattedDate}
+**SUBJECT:** ${briefTitle}
+
+---
+
+**Background**
+
+This legal brief provides a preliminary assessment of a Product Disclosure Statement (PDS) intended for the ${regionSelect.value} market. The review, conducted using the 'Legal-AI-ly Blonde' compliance tool, indicates a generally compliant structure. Overall compliance is rated at **${currentOverallCompliancePercentage.toFixed(2)}%**, resulting in a **${overallStatus}** status. Key areas of compliance and those requiring attention are detailed below.
+
+**Objective of Seeking a Legal Opinion**
+
+[Insert objective here]
+
+**Analysis**
+
+This section outlines the specific compliance issues that need addressing and suggestions for enhancement:\n\n` +
+`${(analysisFail.length > 0 || analysisSuggestion.length > 0) ? [...analysisFail, ...analysisSuggestion].join('\n\n') : '* No specific issues or suggestions to highlight in this analysis.'}` +
+`
+**Conclusion**
+
+The draft insurance content for ${regionSelect.value} received an overall compliance rating of **${currentOverallCompliancePercentage.toFixed(2)}%**.
+${overallStatus === 'PASS' ? 'The document generally meets the expected compliance standards. Further review for nuanced legal interpretation and alignment with evolving best practices is always recommended.' : 'The document requires further revision to address the flagged compliance issues before finalization. Addressing the identified failures is critical for achieving compliance.'}
+
+**Deliverables Required**
+
+* Legal Sign-Off Letter addressed to Cover Genius and {{partner.subsidiary.title}}, confirming all matters above.
+* Suggested completion date: within 7 business days (subject to agreement with insert legal firm).
+`;
+
+                legalBriefOutput.value = briefContent;
+                legalBriefSection.style.display = 'block';
+                legalBriefSection.scrollIntoView({ behavior: 'smooth' });
+            }
+
+            // Gestionnaire d'événements pour le bouton de vérification de conformité
+            // Event handler for the check compliance button
+            checkComplianceBtn.addEventListener('click', function() {
+                alertMessage.classList.add('hidden');
+                resultsSection.style.opacity = '0';
+                resultsSection.style.display = 'none';
+                legalBriefSection.style.display = 'none';
+                generateBriefBtn.style.display = 'none';
+
+                const selectedRegion = regionSelect.value;
+                const insuranceContent = insuranceContentTextArea.value;
+
+                if (!selectedRegion || !insuranceContent.trim()) {
+                    alertMessage.classList.remove('hidden');
+                    setTimeout(() => {
+                        alertMessage.classList.add('hidden');
+                    }, 5000);
+                    return;
+                }
+
+                const results = [];
+                let passedChecks = 0;
+                let totalStrictChecks = 0;
+
+                const contentLower = insuranceContent.toLowerCase();
+
+                keywords.forEach(keyword => {
+                    totalStrictChecks++;
+                    if (contentLower.includes(keyword.toLowerCase())) {
+                        results.push({ type: 'keyword', term: keyword, status: 'pass', message: `Contains "${keyword}" keyword.`, });
+                        passedChecks++;
+                    } else {
+                        results.push({ type: 'keyword', term: keyword, status: 'fail', message: `Missing "${keyword}" keyword.`, });
+                    }
+                });
+
+                totalStrictChecks++;
+                const hasHowClaimsWork = contentLower.includes('how claims work');
+                const hasMakingAClaim = contentLower.includes('making a claim');
+                if (hasHowClaimsWork || hasMakingAClaim) {
+                    results.push({ type: 'keyword', term: 'claims process', status: 'pass', message: `Contains keywords related to claims process ("how claims work" or "making a claim").`, });
+                    passedChecks++;
+                } else {
+                    results.push({ type: 'keyword', term: 'claims process', status: 'fail', message: `Missing keywords for claims process ("how claims work" or "making a claim").`, });
+                }
+
+                totalStrictChecks++;
+                const hasPolicyIssuer = contentLower.includes('policy issuer');
+                const hasPlanIssuer = contentLower.toLowerCase().includes('plan issuer');
+                if (hasPolicyIssuer || hasPlanIssuer) {
+                    results.push({ type: 'keyword', term: 'issuer identification', status: 'pass', message: `Contains keywords for issuer identification ("policy issuer" or "plan issuer").`, });
+                    passedChecks++;
+                } else {
+                    results.push({ type: 'keyword', term: 'issuer identification', status: 'fail', message: `Missing keywords for issuer identification ("policy issuer" or "plan issuer").`, });
+                }
+
+                if (selectedRegion) {
+                    const financialConductAuthorityPresentInContent = contentLower.includes('financial conduct authority');
+                    if (selectedRegion === 'United Kingdom') {
+                        totalStrictChecks++;
+                        if (financialConductAuthorityPresentInContent) {
+                            results.push({ type: 'region-specific', term: 'Financial Conduct Authority', status: 'pass', message: `(UK) Mentions Financial Conduct Authority.`, });
+                            passedChecks++;
+                        } else {
+                            results.push({ type: 'region-specific', term: 'Financial Conduct Authority', status: 'fail', message: `(UK) Suggest mentioning Financial Conduct Authority for compliance.`, });
+                        }
+                    } else if (financialConductAuthorityPresentInContent) {
+                        results.push({
+                            type: 'error',
+                            term: 'Financial Conduct Authority',
+                            status: 'fail',
+                            message: `(Error) Financial Conduct Authority mention found. This is specific to the United Kingdom and should not be present for ${selectedRegion}.`,
+                        });
+                    }
+
+                    totalStrictChecks++;
+                    const hasCover = contentLower.includes('cover');
+                    const hasProtection = contentLower.includes('protection');
+                    if (selectedRegion === 'United States') {
+                        if (hasCover) {
+                            results.push({ type: 'suggestion', term: 'cover/protection', status: 'pass', message: `(US) Uses "cover", which is common in the United States.`, });
+                            passedChecks++;
+                        } else {
+                            results.push({ type: 'suggestion', term: 'cover/protection', status: 'fail', message: `(US) Suggest using "protection" instead of "cover" for content in the United States.`, });
+                        }
+                    } else {
+                        if (hasProtection) {
+                            results.push({ type: 'suggestion', term: 'cover/protection', status: 'pass', message: `(Global) Uses "protection", which is encouraged.`, });
+                            passedChecks++;
+                        } else {
+                            results.push({ type: 'suggestion', term: 'cover/protection', status: 'fail', message: `(Global) Suggest using "protection" instead of "cover" for content in ${selectedRegion}.`, });
+                        }
+                    }
+
+                    const currentRegionLegislation = regionLegislation[selectedRegion] || [];
+                    currentRegionLegislation.forEach(item => {
+                        const isPresent = contentLower.includes(item.term.toLowerCase());
+                        if (item.required === false) {
+                            if (isPresent) {
+                                results.push({ type: 'suggestion', term: item.term, status: 'pass', message: `(Guideline) Appears to address: "${item.term}".`, });
+                            } else {
+                                results.push({ type: 'suggestion', term: item.term, status: 'fail', message: `(Guideline) ${item.message.trim()}`, });
+                            }
+                        } else {
+                            totalStrictChecks++;
+                            if (isPresent) {
+                                results.push({ type: 'legislation', term: item.term, status: 'pass', message: `(Legislation) Appears to address: "${item.term}".`, });
+                                passedChecks++;
+                            } else {
+                                results.push({ type: 'legislation', term: item.term, status: 'fail', message: `(Legislation) Suggest including or addressing: "${item.message.replace(`(${selectedRegion})`, '').trim()}".`, });
+                            }
+                        }
+                    });
+                }
+
+                resultsContainer.innerHTML = '';
+                results.forEach((result, index) => {
+                    const resultDiv = document.createElement('div');
+                    let iconSvg = '';
+                    let textClass = 'font-normal';
+
+                    resultDiv.style.opacity = '0';
+                    resultDiv.style.transform = 'translateY(10px)';
+                    resultDiv.style.transition = 'all 0.5s ease-out';
+
+                    if (result.status === 'pass') {
+                        iconSvg = `<svg class="text-green-500 w-6 h-6 mr-3 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`;
+                        textClass = 'font-normal';
+                    } else if (result.status === 'fail' && result.type !== 'suggestion') {
+                        iconSvg = `<svg class="text-red-500 w-6 h-6 mr-3 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`;
+                        textClass = 'font-semibold';
+                    } else if (result.status === 'fail' && result.type === 'suggestion') {
+                        iconSvg = `<svg class="text-yellow-500 w-6 h-6 mr-3 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21l18 0M3 17l18 0M3 13l18 0M3 9l18 0M3 5l18 0"></path><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zM12 18c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6z"></path></svg>`;
+                        textClass = 'font-medium';
+                    }
+
+                    resultDiv.className = `flex items-start text-lg p-2 rounded-lg shadow-sm text-pink-900 ${textClass}`;
+                    resultDiv.innerHTML = iconSvg + `<p>${result.message}</p>`;
+                    resultsContainer.appendChild(resultDiv);
+
+                    setTimeout(() => {
+                        resultDiv.style.opacity = '1';
+                        resultDiv.style.transform = 'translateY(0)';
+                    }, index * 100);
+                });
+
+                if (totalStrictChecks > 0) {
+                    const percentage = (passedChecks / totalStrictChecks) * 100;
+                    overallComplianceText.textContent = `Overall Compliance: ${percentage.toFixed(2)}%`;
+                    overallComplianceSection.style.display = 'block';
+
+                    if (percentage >= 75) {
+                        passFailStatus.textContent = 'PASS!';
+                        passFailStatus.className = 'text-green-600 text-xl font-bold';
+                        legallyBlondePassQuote.style.display = 'block';
+                        legallyBlondeFailQuote.style.display = 'none';
+                    } else {
+                        passFailStatus.textContent = 'FAIL!';
+                        passFailStatus.className = 'text-red-600 text-xl font-bold';
+                        legallyBlondePassQuote.style.display = 'none';
+                        legallyBlondeFailQuote.style.display = 'block';
+                    }
+                } else {
+                    overallComplianceSection.style.display = 'none';
+                    legallyBlondePassQuote.style.display = 'none';
+                    legallyBlondeFailQuote.style.display = 'none';
+                }
+
+                resultsSection.style.display = 'block';
+                setTimeout(() => {
+                    resultsSection.style.opacity = 1;
+                    generateBriefBtn.style.display = 'flex';
+                }, 10);
+            });
+
+            generateBriefBtn.addEventListener('click', generateLegalBrief);
+        });
+    </script>
+</body>
+</html>
